@@ -10,11 +10,9 @@ def solution(brown, yellow):
     answer = []
     y = 1
     x = (brown + yellow); 
-   # print("x : ", x , "y : ", y )
     while brown != 2*x + 2*y - 4:
         y += 1
         x = (brown + yellow)/y
-      #  print("x : ", x , "y : ", y)
         
     answer = [int(x), y]
     return answer
