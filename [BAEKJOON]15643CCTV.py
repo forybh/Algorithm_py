@@ -69,7 +69,6 @@ def solution(m, cc):
             m2 = copy.deepcopy(ma)
             m3 = copy.deepcopy(ma)
             m4 = copy.deepcopy(ma)
-            print(id(m1), id(m2), id(m3), id(m4))
             if c[0] == 1:
                 tmpq. append(findUp(m1, c[1], c[2]))
                 tmpq. append(findDown(m2, c[1], c[2]))
@@ -93,7 +92,6 @@ def solution(m, cc):
             if c[0] == 5:
                 tmpq.append(findDown(findLeft(findRight(findUp(m1, c[1], c[2]), c[1], c[2]),c[1],c[2]),c[1],c[2]))
         q = tmpq.copy()
-    print(q)
     for r in q:
         ans = min(findZero(r), ans)
     return ans

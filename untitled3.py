@@ -1,27 +1,42 @@
-def traped(roads, r):
-    new_roads = []
-    for road in roads:
-        if r in road[:-1]:
-            new_road = [road[1],road[0],road[2]]
-            new_roads.append(new_road)
-        else: new_roads.append(road)
-    return new_roads
-
-def solution(n, start, end, roads, traps):
-    answers = []
-    if start == end:
-        return 0
-    for road in roads:
-        if road[0] == start:
-            new_start = road[1]
-            distance = road[2]
-            if road[1] in traps:
-                new_roads = traped(roads, new_start)
-                return distance  + solution(n, new_start, end, new_roads, traps)
-            else:
-                return distance  + solution(n, new_start, end, roads, traps)
+def solution(relation):
+    answer = 0
+    for i in range(len(relation[0])): #첫번째 기준점
+        print(i)
+        one = set()
+        for r in relation:
+            one.add(r[i])
+        if len(one) == len(relation):
+            answer += 1
+            #continue
+        
+        for j in range(i + 1, len(relation[0])): #두번째 기준점
+            print(i, j)
+            two = []
+            for r in relation:
+                if (r[i],r[j]) in two:
+                    break
+                two.append((r[i],r[j]))
+            if len(two) == len(relation):
+                answer += 1
+                #continue
                 
-    return 0
+            for k in range(j+1, len(relation[0])):
+                l = []
+                print(i, j, k)
+                for rel in relation:
+                    tmp = []
+                    tmp.append(rel[i])
+                    for t in range(j, k+1):
+                        tmp.append(rel[t])
+                    if tmp in l:
+                        break
+                    else:
+                        l.append(tmp)
+                if len(l) == len(relation):
+                    answer += 1
+                    #break
+    
+               
+    return answer
 
-print(traped([[1, 2, 1], [3, 2, 1], [2, 4, 1]], 4))
-print(solution(4,1,4,[[1, 2, 1], [3, 2, 1], [2, 4, 1]],[2,3]))
+print(solution([["100","ryan","music","2"],["200","apeach","math","2"],["300","tube","computer","3"],["400","con","computer","4"],["500","muzi","music","3"],["600","apeach","music","2"]]))
