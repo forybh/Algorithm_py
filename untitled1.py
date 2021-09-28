@@ -1,24 +1,37 @@
-import heapq
-import sys
-sys.setrecursionlimit(10000)
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Sep 11 13:59:32 2021
 
-def findParent(x, parents):
-    if x not in parents.keys():
-        parents[x] = x + 1
-        return x
-    
-    p = findParent(parents[x], parents)
-    parents[x] = p + 1
-    return p
+@author: yubyeongheon
+"""
 
-
-
-def solution(k, room_number):
+import collections
+def solution(id_list, report, k):
     answer = []
-    parents = {}
-    for n in room_number:
-        x = findParent(n, parents)
-        answer.append(x)
+    cnt_dict = collections.defaultdict(int)
+    ban_dict = collections.defaultdict(set)
+    for re in report: 
+        f, t = re.split() #누가 누구를
+        ban_dict[f].add(t)
+    
+    for key in ban_dict.keys():
+        for s in ban_dict[key]:
+            cnt_dict[s] += 1
+    
+    ban_list = set()
+    for key in cnt_dict:
+        if cnt_dict[key] >= k :
+            ban_list.add(key)
+    
+    for i in id_list:
+        cnt = 0
+        for j in ban_dict[i]:
+            if j in ban_list:
+                cnt += 1
+        answer.append(cnt)
+        
+    
     return answer
 
-print(solution(10, [1,3,4,1,3,1]))
+print(solution(["muzi", "frodo", "apeach", "neo"], ["muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi"],2))

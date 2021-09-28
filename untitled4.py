@@ -1,46 +1,62 @@
-def solution(n, t, m, timetable):
-    answer = ''
-    time_list = []
-    tmp_answer = 0
-    for time in timetable: #시간 변환
-        hour, minute = time.split(":")
-        time_list.append(int(hour)*60 + int(minute))
-    start = 540 # 9시 00분
-    time_list.sort()
-    onBus = [0] * n
-    bus = 0
-    i = 0
+import copy
+def solution(n, info):
+    answer = []
+    apeach_score = 0
+    for i in range(11):
+        if info[i] != 0:
+            apeach_score += (10-i)
     
-    while bus < n: #탈 수 있을 때
-        if onBus[bus] < m and time_list[i] <= start:
-            onBus[bus] += 1
-        else: #못탈때 다음 버스로 바꾸기
-            bus += 1
-            start += t
+    queue = [[n, 0,-apeach_score,[0,0,0,0,0,0,0,0,0,0,0]]] #남은 화살, 지금 쏠 점수, 점수 차이
+    
+    tmp_list = []
+    while len(queue) != 0:
+        top = queue.pop(0)
+        if top[0] < 0 or top[1] >= 10:
+            if top[2] > 0:
+                tmp_list.append(top)
             continue
-        i += 1 
-        if i >= len(time_list):
-            break
-    print(onBus)
+        if top[0] > info[top[1]]: #맞출 수 있을때
+            if info[top[1]] == 0: # 어피치가 안맞춘 과녘일때
+                tm_l = copy.deepcopy(top[3])
+                queue.append([top[0], top[1]+1, top[2], tm_l]) # 안맞출때
+                tm_l2 = copy.deepcopy(top[3])
+                tm_l2[top[1]] = 1
+                queue.append([top[0]-1, top[1]+1, top[2] + (10-top[1]), tm_l2]) # 맞출 때
     
-    last = i - 1
-    print(last)
-    if onBus[-1] < m:
-        tmp_answer = 540 + (t * (n-1))
+            else: #어피치가 맞춘 과녁일때
+                tm_l = copy.deepcopy(top[3])
+                remain = top[0] - info[top[1]] - 1
+                score = top[2] + 2*(10 - top[1])
+                
+                queue.append([top[0], top[1]+1, top[2], tm_l]) # 안맞출때
+                tm_l2 = copy.deepcopy(top[3])
+         
+                tm_l2[top[1]] = info[top[1]] + 1
+    
+                queue.append([remain, top[1]+1, score, tm_l2]) # 맞출 때
+                
+        else:
+            tm_l = copy.deepcopy(top[3])
+            queue.append([top[0], top[1]+1, top[2], tm_l]) # 안맞출때
+            
+    if len(tmp_list) == 0:
+        return [-1]
+    
+    tmp_list.sort(key = lambda x: -x[2])
+    max_gap = tmp_list[0][2]
+    tmp_list2 = []
+    
+    for tmp in tmp_list:
+        if tmp[0] !=0:
+            tmp[3][10] = tmp[0]
+        if tmp[2] == max_gap:
+            tmp_list2.append(tmp[3])
+    
+    if len(tmp_list2) == 1:
+        answer = tmp_list2[0]
     else:
-        tmp_answer = time_list[last] - 1
-        
-    hour = tmp_answer // 60
-    minute = tmp_answer % 60
-    
-    if(hour < 10):
-        answer += '0' 
-    answer += str(hour)
-    answer += ':'
-    if(minute < 10):
-        answer += '0'
-    answer += str(minute)
-        
-    return answer
+        tmp_list2.sort(key = lambda x: (-x[10],-x[9],-x[8],-x[7],-x[6],-x[5],-x[4],-x[3],-x[2],-x[1],-x[0]))
+        answer = tmp_list2[0]
 
-print(solution(2,10,2,["09:10", "09:09", "08:00"]))
+    
+    return answer

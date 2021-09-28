@@ -1,25 +1,27 @@
-import collections
-from itertools import combinations
-def solution(orders, course):
-    answer = []
-    for c in course:
-        d = collections.defaultdict(int)
-        for order in orders:
-            tmp = list(combinations(order, c))
-            for t in tmp:
-                t = list(t)
-                t.sort()
-                d["".join(t)] += 1
-        if len(d) != 0:
-            m = max(d.values())
-        if m <= 1:
-            continue
-        for k in d.keys():
-            if d[k] == m:
-                answer.append(k)
+
+import math
+
+def is_prime(num):
+    if num == 1: return False
+    for i in range(2, int(math.sqrt(num))+1):
+        if num % i == 0:
+            return False 
+    return True
+
+def solution(n, k):
+    answer = 0
+    num = ''
+    while n > 0 :
+        num += str(n%k)
+        n //= k
     
-    answer.sort()
+    num = num[::-1]
+    temp = num.split('0')
+    for t in temp:
+        if t == '': continue
+        if is_prime(int(t)):
+            answer += 1
             
     return answer
 
-print(solution(["XYZ", "XWY", "WXA"], [2,3,4]))
+print(solution(1000000, 10))
